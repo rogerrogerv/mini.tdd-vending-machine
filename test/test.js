@@ -25,7 +25,7 @@ describe("The vending machine", () => {
       expect(machine.balance).to.equal(660);
     });
 
-    it("should have a select row method", () => {
+    it("should have a pressButton method", () => {
       expect(machine.pressButton).to.be.a("function");
     });
 
@@ -54,6 +54,22 @@ describe("The vending machine", () => {
       const columnError = "invalid COLUMN choice (choose 1 - 4)";
       machine.pressButton(8);
       expect(machine.error).to.equal(columnError);
+    });
+
+    it("should have a changeReturn method", () => {
+      expect(machine.changeReturn).to.be.a("function");
+    });
+
+    it("it should return reset balance and display coins", () => {
+      const newMachineD = new VendingMachine();
+      newMachineD.insertCoin(500);
+      newMachineD.insertCoin(100);
+      expect(newMachineD.balance).to.equal(600);
+      let change = newMachineD.changeReturn();
+      expect(newMachineD._till[500]).to.equal(0);
+      expect(newMachineD._till[100]).to.equal(0);
+      expect(change).to.equal(2);
+      expect(newMachineD.balance).to.equal(0);
     });
   });
 

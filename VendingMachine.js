@@ -19,7 +19,30 @@ class VendingMachine {
     this._row = "";
     this._column = 0;
     this.error = "";
-    this.inventory = [["juice", "coffee"]];
+
+    const juice = { name: "Apple Juice", price: 200, count: 5 };
+    const coffee = { name: "Tully's", price: 250, count: 7 };
+    const tea = { name: "Green Tea", price: 350, count: 5 };
+    const soda = { name: "Cola", price: 100, count: 7 };
+    const regular = { name: "Water Water", price: 50, count: 4 };
+    const mineral = { name: "Mineral Water", price: 250, count: 3 };
+    const diet = { name: "Diet Water", price: 250, count: 2 };
+    const energy = { name: "Extra Jolt", price: 350, count: 1 };
+    const mint = { name: "Fresh Mint", price: 200, count: 4 };
+    const gum = { name: "Bubble Gum", price: 150, count: 3 };
+    const jelly = { name: "Berry Jelly", price: 100, count: 2 };
+    const candy = { name: "Sticky Tart", price: 100, count: 1 };
+    const biscuit = { name: "Sweet", price: 150, count: 4 };
+    const chip = { name: "Salted Chips", price: 100, count: 3 };
+    const cracker = { name: "Plain Cracker", price: 300, count: 2 };
+    const cookie = { name: "Chocolate Cookie", price: 200, count: 1 };
+
+    const inventory = [
+      [juice, coffee, tea, soda],
+      [regular, mineral, diet, energy],
+      [mint, gum, jelly, candy],
+      [biscuit, chip, cracker, cookie],
+    ];
   }
 
   get balance() {
@@ -60,7 +83,17 @@ class VendingMachine {
     this._balance += denomination;
   }
 
-  changeReturn() {}
+  changeReturn() {
+    let total = Object.values(this._till).reduce((total, val) => total + val);
+    this._till = {
+      10: 0,
+      50: 0,
+      100: 0,
+      500: 0,
+    };
+    this.balance = 0;
+    return total;
+  }
 
   pressButton(button) {
     if (typeof button === "string") {
