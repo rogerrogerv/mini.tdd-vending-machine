@@ -66,10 +66,40 @@ describe("The vending machine", () => {
       newMachineD.insertCoin(100);
       expect(newMachineD.balance).to.equal(600);
       let change = newMachineD.changeReturn();
+      expect(change).to.deep.equal({
+        10: 0,
+        50: 0,
+        100: 1,
+        500: 1,
+      });
       expect(newMachineD._till[500]).to.equal(0);
       expect(newMachineD._till[100]).to.equal(0);
-      expect(change).to.equal(2);
+      expect(newMachineD._till[50]).to.equal(0);
+      expect(newMachineD._till[10]).to.equal(0);
       expect(newMachineD.balance).to.equal(0);
+    });
+
+    it("calculateBalance should match actual balance", () => {
+      const newMachineE = new VendingMachine();
+      newMachineE.insertCoin(500);
+      expect(newMachineE.calculateBalance()).to.equal(500);
+      expect(newMachineE.balance).to.equal(500);
+      expect(newMachineE.calculateBalance()).to.equal(newMachineE.balance);
+      newMachineE.insertCoin(10);
+      expect(newMachineE.calculateBalance()).to.equal(newMachineE.balance);
+    });
+
+    it("dispenseProduct should dispense the product", () => {
+      const newMachineF = new VendingMachine();
+      newMachineF.insertCoin(500);
+      newMachineF.pressButton("d");
+      newMachineF.pressButton(4);
+      let row = newMachineF.row;
+      let column = newMachineF.column;
+      expect(newMachineF.calculateBalance()).to.equal(500);
+      expect(newMachineF.dispenseProduct(row, column)).to.equal(
+        "Chocolate Cookie"
+      );
     });
   });
 

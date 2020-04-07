@@ -84,7 +84,7 @@ class VendingMachine {
   }
 
   changeReturn() {
-    let total = Object.values(this._till).reduce((total, val) => total + val);
+    let returnedCoins = this._till;
     this._till = {
       10: 0,
       50: 0,
@@ -92,7 +92,7 @@ class VendingMachine {
       500: 0,
     };
     this.balance = 0;
-    return total;
+    return returnedCoins;
   }
 
   pressButton(button) {
@@ -101,6 +101,37 @@ class VendingMachine {
     } else if (typeof button === "number") {
       this.column = button;
     }
+  }
+
+  calculateBalance() {
+    let total =
+      this._till[10] * 10 +
+      this._till[50] * 50 +
+      this._till[100] * 100 +
+      this._till[500] * 500;
+    this.balance = total;
+    return total;
+  }
+
+  dispenseProduct(row, column) {
+    let product;
+    let selectedRow;
+    switch (row) {
+      case "A":
+        selectedRow = 0;
+        break;
+      case "B":
+        selectedRow = 1;
+        break;
+      case "C":
+        selectedRow = 3;
+        break;
+      case "D":
+        selectedRow = 4;
+        break;
+    }
+    product = this.inventory[selectedRow][column - 1].name;
+    return product;
   }
 }
 
