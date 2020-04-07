@@ -9,52 +9,64 @@
 
 class VendingMachine {
   constructor() {
-    this.till = {
+    this._till = {
       10: 0,
       50: 0,
       100: 0,
       500: 0,
     };
-    this.balance = 0;
-    this.row = null;
-    this.column = null;
-    this.inventory = [[juice, coffee]];
+    this._balance = 0;
+    this._row = "";
+    this._column = 0;
+    this.error = "";
+    this.inventory = [["juice", "coffee"]];
+  }
+
+  get balance() {
+    return this._balance;
+  }
+  set balance(amount) {
+    this._balance = amount;
+  }
+
+  get row() {
+    return this._row;
+  }
+  set row(rowLetter) {
+    const rowChoices = ["A", "B", "C", "D"];
+    const rowError = "invalid ROW choice (choose A - D)";
+    if (rowChoices.includes(rowLetter.toUpperCase())) {
+      this._row = rowLetter.toUpperCase();
+    } else {
+      this.error = rowError;
+    }
+  }
+
+  get column() {
+    return this._column;
+  }
+  set column(columnNumber) {
+    const columnChoices = [1, 2, 3, 4];
+    const columnError = "invalid COLUMN choice (choose 1 - 4)";
+    if (columnChoices.includes(columnNumber)) {
+      this._column = columnNumber;
+    } else {
+      this.error = columnError;
+    }
   }
 
   insertCoin(denomination) {
-    this.till[denomination] += 1;
-    this.balance += denomination;
+    this._till[denomination] += 1;
+    this._balance += denomination;
   }
 
   changeReturn() {}
 
-  selectRow(selectedRow) {
-    if (
-      selectedRow === "A" ||
-      selectedRow === "B" ||
-      selectedRow === "C" ||
-      selectedRow === "D"
-    ) {
-      this.row = selectedRow;
-    } else {
-      return "invalid row letter";
-    }
-  }
-
-  pressButton(selectedRow, selectedColumn) {
-    if (this.row !== null) {
-      this.selectRow(selectedRow);
-    }
-
-    if (
-      selectedColumn === 1 ||
-      selectedColumn === 2 ||
-      selectedColumn === 3 ||
-      selectedColumn === 4
-    ) {
-      this.column = selectedColumn;
-    } else {
-      return "invalid column number";
+  pressButton(button) {
+    if (typeof button === "string") {
+      this.row = button;
+    } else if (typeof button === "number") {
+      this.column = button;
     }
   }
 }

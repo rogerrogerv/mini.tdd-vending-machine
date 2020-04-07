@@ -2,57 +2,99 @@
 const VendingMachine = require("../VendingMachine");
 const { expect } = require("chai");
 
-//Global Setup
-const machine = new VendingMachine();
+describe("The vending machine", () => {
+  //Setup
+  const machine = new VendingMachine();
+  const initialBalance = 0;
 
-describe("vending machine", () => {
-  it("should accept valid coins", () => {
-    // Setup
-
-    // Exercise
-    machine.insertCoin(500);
-
-    // Assert
-    expect(machine.till).to.deep.equal({
-      10: 0,
-      50: 0,
-      100: 0,
-      500: 1,
+  describe("it's functions:", () => {
+    it("should have an insertCoin method", () => {
+      expect(machine.insertCoin).to.be.a("function");
     });
-    expect(machine.balance).to.equal(500); // Use an ES6 getter
+
+    it("insertCoin should accept a coin and update the till accordingly", () => {
+      machine.balance = 0;
+      machine.insertCoin(10);
+      machine.insertCoin(50);
+      machine.insertCoin(100);
+      machine.insertCoin(500);
+      expect(machine._till[10]).to.equal(1);
+      expect(machine._till[50]).to.equal(1);
+      expect(machine._till[100]).to.equal(1);
+      expect(machine._till[500]).to.equal(1);
+      expect(machine.balance).to.equal(660);
+    });
+
+    it("should have a select row method", () => {
+      expect(machine.pressButton).to.be.a("function");
+    });
+
+    it("it should save the row and return the row selected", () => {
+      machine.pressButton("a");
+      expect(machine.row).to.be.equal("A");
+      machine.pressButton("C");
+      expect(machine.row).to.be.equal("C");
+    });
+
+    it("it should display an error for non valid row selection", () => {
+      const rowError = "invalid ROW choice (choose A - D)";
+      machine.pressButton("a");
+      machine.pressButton("h");
+      expect(machine.error).to.equal(rowError);
+    });
+
+    it("it should save the column and print to console when column is selected", () => {
+      machine.pressButton(1);
+      expect(machine.column).to.be.equal(1);
+      machine.pressButton(4);
+      expect(machine.column).to.be.equal(4);
+    });
+
+    it("it should display an error for non valid column selection", () => {
+      const columnError = "invalid COLUMN choice (choose 1 - 4)";
+      machine.pressButton(8);
+      expect(machine.error).to.equal(columnError);
+    });
   });
 
-  it("should have an insertCoin method", () => {
-    expect(machine.insertCoin).to.be.a("function");
+  describe("given the balance is zero:", () => {
+    it("the balance is zeroed", () => {
+      machine.balance = 0;
+      expect(machine.balance).to.equal(0);
+      expect(machine.balance).to.equal(initialBalance);
+    });
+
+    describe("when a coin is inserted", () => {
+      it("should raise the balance and store the coin", () => {
+        const usedBalance = 1000;
+        machine.balance = usedBalance;
+        machine._till = {
+          10: 0,
+          50: 0,
+          100: 0,
+          500: 0,
+        };
+        machine.insertCoin(500);
+        expect(machine.balance).to.be.greaterThan(usedBalance);
+        expect(machine._till).to.deep.equal({
+          10: 0,
+          50: 0,
+          100: 0,
+          500: 1,
+        });
+        expect(machine.balance).to.equal(1500); // Use an ES6 getter
+      });
+    });
   });
 
-  it("should have a select row method", () => {
-    expect(machine.pressButton).to.be.a("function");
-  });
-
-  it("NO row selected, it should save the row and print to console when row is selected", () => {
-    machine.pressButton("A", 1);
-    expect(machine.row).to.be.equal("A");
-  });
-
-  it("NO row selected, it should display an error for non valid selection", () => {
-    machine.pressButton("E", 1);
-    expect(machine.pressButton).to.be("invalid row letter");
-  });
-
-  it("NO column selected, it should save the column and print to console when column is selected", () => {
-    machine.pressButton("A", 1);
-    expect(machine.column).to.be.equal(1);
-  });
-
-  it("NO column selected, it should display an error for non valid selection", () => {
-    machine.pressButton("A", 5);
-    expect(machine.pressButton).to.be("invalid column letter");
-  });
-});
-
-describe("Balance", () => {
-  it("if it's zero, it should rise when coin is inserted", () => {
-    machine.balance === 0;
+  describe("new start, fresh machine:", () => {
+    it("when a new machine is made, the balance should be zero", () => {
+      const newMachineA = new VendingMachine();
+      const newMachineB = new VendingMachine();
+      const newMachineC = new VendingMachine();
+      expect(newMachineA.balance).to.equal(initialBalance);
+      expect(newMachineB.balance).to.equal(initialBalance);
+      expect(newMachineC.balance).to.equal(initialBalance);
+    });
   });
 });
